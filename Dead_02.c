@@ -4,17 +4,20 @@
  *****************************************/
 
 // Set these
-#define L 16.43 // wheel base in cm
-#define R 2.14 // wheel radius in cm
+#define L 10.0367 // wheel base in cm
+#define R 2.7729 // wheel radius in cm
 
 #define PI 3.14159265359
 
 //Global variables - you will need to change some of these
 float robot_X = 0.0, robot_Y = 0.0, robot_TH = 0.0;
 int velocityUpdateInterval = 5; // ms
-int PIDUpdateInterval = 2;
-int inputB[3] = {0,0,0};
-int inputC[3] = {0,0,0};
+// int PIDUpdateInterval = 2; // Already 2?
+int inputB[3] = {-4,-20,19};
+int inputC[3] = {-16,5,-25};
+
+// 13, -13 is full round (360 degrees)
+// 13, 0 for half round (180 degrees)
 
 float degrees_to_velocity = ((PI/180.0) / (velocityUpdateInterval/1000.0) * R); // units of cm/s
 int thetaBPrev = 0, thetaCPrev = 0;
@@ -37,8 +40,10 @@ task dead_reckoning()
 		int deltaThetaB = thetaBNow - thetaBPrev;
 		int deltaThetaC = thetaCNow - thetaCPrev;
 
-		float vRight = deltaThetaB * degrees_to_velocity; // Be careful here! Here we are assuming B is the right motor
-		float vLeft = deltaThetaC * degrees_to_velocity; // Swap deltaThetaB and deltaThetaC if motors are the other way round
+	 	// Be careful here! Here we are assuming B is the left motor
+		// Swap deltaThetaB and deltaThetaC if motors are the other way round
+		float vLeft = deltaThetaB * degrees_to_velocity;
+		float vRight = deltaThetaC * degrees_to_velocity;
 		float v = (vLeft + vRight)/2; // cm/s
 		float omega = (vRight - vLeft)/L; // radians/s
 
@@ -173,7 +178,7 @@ task main()
 	nMotorEncoder[motorC] = 0;
 	nMotorPIDSpeedCtrl[motorB] = mtrSpeedReg;
 	nMotorPIDSpeedCtrl[motorC] = mtrSpeedReg;
-	nPidUpdateInterval = PIDUpdateInterval;
+	// nPidUpdateInterval = PIDUpdateInterval; // Is already 2?
 
 	//getInput();
 
