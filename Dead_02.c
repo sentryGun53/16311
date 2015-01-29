@@ -4,8 +4,8 @@
  *****************************************/
 
 // Set these
-#define L 16.43 // wheel base in inches
-#define R 2.14 // wheel radius in inches
+#define L 16.43 // wheel base in cm
+#define R 2.14 // wheel radius in cm
 
 #define PI 3.14159265359
 
@@ -16,7 +16,7 @@ int PIDUpdateInterval = 2;
 int inputB[3] = {0,0,0};
 int inputC[3] = {0,0,0};
 
-float degrees_to_velocity = ((PI/180.0) / (velocityUpdateInterval/1000.0) * R); // units of inch/s
+float degrees_to_velocity = ((PI/180.0) / (velocityUpdateInterval/1000.0) * R); // units of cm/s
 int thetaBPrev = 0, thetaCPrev = 0;
 
 /*****************************************
@@ -39,7 +39,7 @@ task dead_reckoning()
 
 		float vRight = deltaThetaB * degrees_to_velocity; // Be careful here! Here we are assuming B is the right motor
 		float vLeft = deltaThetaC * degrees_to_velocity; // Swap deltaThetaB and deltaThetaC if motors are the other way round
-		float v = (vLeft + vRight)/2; // inch/s
+		float v = (vLeft + vRight)/2; // cm/s
 		float omega = (vRight - vLeft)/L; // radians/s
 
 		// Runge-Kutta approximation
