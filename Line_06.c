@@ -7,15 +7,15 @@
 #define LIGHT_SENSOR_BLACK 36
 #define LIGHT_SENSOR_WHITE 55
 
-#define PIVOT_SPEED 15
-#define DEAD_ZONE_OFFSET 0.05
-#define MAX_SPEED 40
-#define MIN_SPEED 10
+#define PIVOT_SPEED 20
+#define DEAD_ZONE_OFFSET 0.01
+#define MAX_SPEED 30
+#define MIN_SPEED 20
 
 // uncomment this line to make cool noises
 #define MELODIES
 
-// 1-29-2015: consistently finishing normal course in 37 sec even when the room is dark
+
 
 task main()
 {
