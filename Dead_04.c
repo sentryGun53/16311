@@ -13,8 +13,10 @@
 float robot_X = 0.0, robot_Y = 0.0, robot_TH = 0.0;
 int velocityUpdateInterval = 5; // ms
 int PIDUpdateInterval = 2;
-int inputB[3] = {75,75,75};
-int inputC[3] = {-75,-75,-75};
+int inputB[3] = {-71,-34,-53};
+int inputC[3] = {15,-19,58};
+
+//159, -159 is 720 degrees (2 rounds)
 
 float degrees_to_velocity = ((PI/180.0) / (velocityUpdateInterval/1000.0) * R); // units of cm/s
 int thetaBPrev = 0, thetaCPrev = 0;
@@ -186,7 +188,7 @@ task main()
 	for(int i = 0; i < 3; i++)
 	{
 		// a-b-a accelerate-constant-decelerate
-		float a = 1; // Acceleration and deceleration duration
+		float a = 0.5; // Acceleration and deceleration duration in seconds
 		motor[motorB] = 0.5*inputB[i];
 		motor[motorC] = 0.5*inputC[i];
 		wait1Msec(1000 * a);
