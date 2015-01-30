@@ -3,7 +3,7 @@
  * Written by Kaushik Viswanathan
  *****************************************/
 
-// Dead_03.c: Without acceleration and deceleration
+// Dead_04.c: With acceleration and deceleration
 
 #include "measurements.h"
 
@@ -13,8 +13,8 @@
 float robot_X = 0.0, robot_Y = 0.0, robot_TH = 0.0;
 int velocityUpdateInterval = 5; // ms
 int PIDUpdateInterval = 2;
-int inputB[3] = {50,50,50};
-int inputC[3] = {-50,-50,-50};
+int inputB[3] = {75,75,75};
+int inputC[3] = {-75,-75,-75};
 
 float degrees_to_velocity = ((PI/180.0) / (velocityUpdateInterval/1000.0) * R); // units of cm/s
 int thetaBPrev = 0, thetaCPrev = 0;
@@ -175,7 +175,7 @@ task main()
 	nMotorEncoder[motorC] = 0;
 	nMotorPIDSpeedCtrl[motorB] = mtrSpeedReg;
 	nMotorPIDSpeedCtrl[motorC] = mtrSpeedReg;
-  nPidUpdateInterval = PIDUpdateInterval; // Is already 2?
+  nPidUpdateInterval = PIDUpdateInterval;
 
 	//getInput();
 
@@ -185,14 +185,23 @@ task main()
 
 	for(int i = 0; i < 3; i++)
 	{
+		// a-b-a accelerate-constant-decelerate
+		float a = 1; // Acceleration and deceleration duration
+		motor[motorB] = 0.5*inputB[i];
+		motor[motorC] = 0.5*inputC[i];
+		wait1Msec(1000 * a);
+
 		motor[motorB] = inputB[i];
 		motor[motorC] = inputC[i];
+		wait1Msec(1000 * (5-2*a));
 
-		wait1Msec(1000 * 5);
+		motor[motorB] = 0.5*inputB[i];
+		motor[motorC] = 0.5*inputC[i];
+		wait1Msec(1000 * a);
 
+		// Wait for 500ms before executing next pair of velocities
 		motor[motorB] = 0;
 		motor[motorC] = 0;
-
 		wait1Msec(500);
   }
 
