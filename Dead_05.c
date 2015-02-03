@@ -3,7 +3,7 @@
  * Written by Kaushik Viswanathan
  *****************************************/
 
-// Dead_04.c: With acceleration and deceleration
+// Dead_05.c: input through motorA
 
 #include "measurements.h"
 
@@ -13,8 +13,10 @@
 float robot_X = 0.0, robot_Y = 0.0, robot_TH = 0.0;
 int velocityUpdateInterval = 5; // ms
 int PIDUpdateInterval = 2;
-int inputB[3] = {60,-30,-30};
-int inputC[3] = {50 ,30,-42};
+int inputB[3] = {0,0,0};
+int inputC[3] = {0,0,0};
+
+float test;
 
 //159, -159 is 720 degrees (2 rounds)
 
@@ -144,8 +146,13 @@ void getInput()
 		while(nNxtButtonPressed != kEnterButton)
 		{
 			inputB[i] = (int)(nMotorEncoder[motorA] / 5.0);
-			if(inputB[i] > 100) {inputB[i] = 100; nMotorEncoder[motorA] = 100;}
-			else if(inputB[i] < -100) {inputB[i] = -100; nMotorEncoder[motorA] = -100;}
+			if (inputB[i] > 100) {
+				inputB[i] = 100;
+				//nMotorEncoder[motorA] = 500;
+		} else if (inputB[i] < -100) {
+				inputB[i] = -100;
+				//nMotorEncoder[motorA] = -500;
+			}
 			nxtDisplayTextLine(2 * i, "B : %d", inputB[i]);
 			wait1Msec(10);
 		}
@@ -153,8 +160,14 @@ void getInput()
 		while(nNxtButtonPressed != kEnterButton)
 		{
 			inputC[i] = (int)(nMotorEncoder[motorA] / 5.0);
-			if(inputC[i] > 100) {inputC[i] = 100; nMotorEncoder[motorA] = 100;}
-			else if(inputC[i] < -100) {inputC[i] = -100; nMotorEncoder[motorA] = -100;}
+			if(inputC[i] > 100) {
+				inputC[i] = 100;
+				//nMotorEncoder[motorA] = 100;
+			}
+			else if(inputC[i] < -100) {
+				inputC[i] = -100;
+				//nMotorEncoder[motorA] = -100;
+			}
 			nxtDisplayTextLine(2 * i + 1, "C : %d", inputC[i]);
 			wait1Msec(10);
 		}
@@ -179,7 +192,7 @@ task main()
 	nMotorPIDSpeedCtrl[motorC] = mtrSpeedReg;
   nPidUpdateInterval = PIDUpdateInterval;
 
-	//getInput();
+	getInput();
 
 	draw_grid();
 	time1[T1] = 0;

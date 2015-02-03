@@ -5,7 +5,7 @@
 #include "math_functions.h"
 
 #define LIGHT_SENSOR_BLACK 36
-#define LIGHT_SENSOR_WHITE 55
+#define LIGHT_SENSOR_WHITE 61
 
 #define PIVOT_SPEED 20
 #define DEAD_ZONE_OFFSET 0.01
