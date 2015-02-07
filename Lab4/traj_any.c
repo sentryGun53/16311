@@ -180,8 +180,8 @@ task trajectory_following()
 		float yDiff = goalY - markerY;
 
 		// Proportional constant
-		float kp = 10; // tweak this
-		float kd = 20; // can be used for omega desired
+		float kp = 15; // tweak this  (15 Bob 2-07-14 - was originally 10)
+		float kd = 20; // can be used for omega desired  (20 Bob 2-07-14 - was originally 20)
 		float vDesired = kp*(cos(robot_TH) * xDiff + sin(robot_TH) * yDiff);
 		float omegaDesired = kd*((cos(robot_TH) * yDiff - sin(robot_TH) * xDiff) / L);
 
