@@ -57,6 +57,9 @@ float xPositionAtTime(float t) {
 		case 7:
 			x = 4 * (5 * cos(9*t/20) - 4 * cos(t/4));
 			break;
+		case 8:
+			x = 32 * pow(sin(t/5),3);
+			break;
 	}
 
 	return x;
@@ -85,6 +88,9 @@ float yPositionAtTime(float t) {
 			break;
 		case 7:
 			y = 4 * (-4 * sin(t/4) - 5 * sin(9*t/20));
+			break;
+		case 8:
+			y = 2*(13 * cos(t/5) - 5 * cos(2*t/5) - 2 * cos(3*t/5) - cos(4*t/5));
 			break;
 	}
 
@@ -291,8 +297,8 @@ void getInput()
 	while(nNxtButtonPressed != kEnterButton)
 	{
 		option = (int)(nMotorEncoder[motorB] / 10.0);
-		if (option > 7) {
-			option = 7;
+		if (option > 8) {
+			option = 8;
 	} else if (option < 1) {
 			option = 1;
 		}
@@ -307,7 +313,7 @@ void getInput()
 	markerY = robot_Y + MARKERDISTANCE * sin(robot_TH);
 
 	if (option == 1 || option == 3 || option == 4 || option == 5) stopTime = 62.83;
-	else if (option == 2) stopTime = 31.42;
+	else if (option == 2 || option == 8) stopTime = 31.42;
 	else if (option == 6) stopTime = 75.4;
 	else if (option == 7) stopTime = 125.66;
 

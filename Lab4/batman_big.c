@@ -52,7 +52,7 @@ float xPositionAtTime(float t) {
 	else if (58.69 <= t && t < 60.19) x = t/2 -29.345 - 1;
 	else if (60.19 <= t && t < 61.4) x = -t + 60.19 - 0.25;
 
-	return x *= 7.2;
+	return x *= 5.4;
 }
 
 float yPositionAtTime(float t) {
@@ -78,7 +78,7 @@ float yPositionAtTime(float t) {
 	else if (58.69 <= t && t < 60.19) y = t/2 -29.345 - 1;
 	else if (60.19 <= t && t < 61.4) y = -0.25;
 
-	return y *= 7.2;
+	return y *= 5.4;
 }
 
 // Global variables
@@ -193,8 +193,8 @@ task trajectory_following()
 		*/
 
 		// Proportional constant
-		float kp = 15; // tweak this  (15 Bob 2-07-14 - was originally 10)
-		float kd = 20; // can be used for omega desired  (20 Bob 2-07-14 - was originally 20)
+		float kp = 7; // tweak this  (15 Bob 2-07-14 - was originally 10)
+		float kd = 10; // can be used for omega desired  (20 Bob 2-07-14 - was originally 20)
 		float vDesired = kp*(cos(robot_TH) * xDiff + sin(robot_TH) * yDiff);
 		float omegaDesired = kd*((cos(robot_TH) * yDiff - sin(robot_TH) * xDiff) / L);
 
