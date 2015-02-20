@@ -8,7 +8,7 @@
 #include "motion_functions.h"
 
 #define LIGHT_SENSOR_BLACK 37 // 37 for black
-#define LIGHT_SENSOR_WHITE 59 // 60 for white
+#define LIGHT_SENSOR_WHITE 55 // 60 for white
 
 #define PIVOT_SPEED 10
 #define DEAD_ZONE_OFFSET 0.01
@@ -19,6 +19,11 @@
 #define R 1.077 // inches (1.076285 Adriel 2-13-15) (1.0776 Adriel 2-10-15)
 #define ARM_LENGTH 8.5
 #define ARM_OFFSET 0.5
+
+////////////////////////////////////////////////////////////////
+#define MAP_NUMBER 591
+string destinationLetter = "J";
+////////////////////////////////////////////////////////////////
 
 
 float robotX = 0.0, robotY = 0.0, robotTH = 0.0;
@@ -36,6 +41,12 @@ float readings[5][30] = {
 	{-1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1},
 	{-1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1},
 	{-1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1}
+};
+int ideal_map[4][30] = {
+	{-1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1}, // top edge
+	{-1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1}, // right edge
+	{-1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1}, // bottom edge
+	{-1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1}  // left edge
 };
 
 float calculateDistance(float x, float y) {
@@ -114,7 +125,12 @@ task dead_reckoning()
 			int units = (int) distanceAlongCurrentStraightEdge;
 			//nxtDisplayTextLine(1, "distance: %d", units);
 			if (units % step == 0) {
-				readings[turnsMade][units/step] = d;
+				if (turnsMade > 4 || units/step > 29) {
+					// was going to access the array out of bounds! agh - error
+					playTone(600, 100); // tone for 10 sec
+				} else {
+					readings[turnsMade][units/step] = d;
+				}
 			}
 		}
 
@@ -232,7 +248,7 @@ void saveReadingsToFile() {
 	for (int i=0; i < 5; i++) {
 		for (int j=0; j < 30; j++) {
 			string str = "";
-			StringFormat(str, "%d", readings[i][j]);
+			stringFormat(str, "%d", readings[i][j]);
 			WriteString(output, result, str);
 		}
 		WriteString(output, result, "");
@@ -265,6 +281,107 @@ task turnCounter() {
 
 
 
+int figureOutWhereWeAre() {
+
+	// build an ideal map based on the given number. we'll match our readings to the ideal map using the probabilistic model
+
+	// left edge
+  ideal_map[3][14] = (MAP_NUMBER >> 9 & 0x1);
+  ideal_map[3][13] = (MAP_NUMBER >> 9 & 0x1);
+  ideal_map[3][12] = (MAP_NUMBER >> 9 & 0x1);
+  ideal_map[3][11] = (MAP_NUMBER >> 9 & 0x1);
+  ideal_map[3][10] = (MAP_NUMBER >> 9 & 0x1);
+  ideal_map[3][9] = (MAP_NUMBER >> 8 & 0x1);
+  ideal_map[3][8] = (MAP_NUMBER >> 8 & 0x1);
+  ideal_map[3][7] = (MAP_NUMBER >> 8 & 0x1);
+  ideal_map[3][6] = (MAP_NUMBER >> 8 & 0x1);
+  ideal_map[3][5] = (MAP_NUMBER >> 8 & 0x1);
+  ideal_map[3][4] = (MAP_NUMBER >> 7 & 0x1);
+  ideal_map[3][3] = (MAP_NUMBER >> 7 & 0x1);
+  ideal_map[3][2] = (MAP_NUMBER >> 7 & 0x1);
+  ideal_map[3][1] = (MAP_NUMBER >> 7 & 0x1);
+  ideal_map[3][0] = (MAP_NUMBER >> 7 & 0x1);
+
+  // bottom edge
+  ideal_map[2][9] = (MAP_NUMBER >> 6 & 0x1);
+  ideal_map[2][8] = (MAP_NUMBER >> 6 & 0x1);
+  ideal_map[2][7] = (MAP_NUMBER >> 6 & 0x1);
+  ideal_map[2][6] = (MAP_NUMBER >> 6 & 0x1);
+  ideal_map[2][5] = (MAP_NUMBER >> 6 & 0x1);
+  ideal_map[2][4] = (MAP_NUMBER >> 5 & 0x1);
+  ideal_map[2][3] = (MAP_NUMBER >> 5 & 0x1);
+  ideal_map[2][2] = (MAP_NUMBER >> 5 & 0x1);
+  ideal_map[2][1] = (MAP_NUMBER >> 5 & 0x1);
+  ideal_map[2][0] = (MAP_NUMBER >> 5 & 0x1);
+
+  // right edge
+  ideal_map[1][14] = (MAP_NUMBER >> 4 & 0x1);
+  ideal_map[1][13] = (MAP_NUMBER >> 4 & 0x1);
+  ideal_map[1][12] = (MAP_NUMBER >> 4 & 0x1);
+  ideal_map[1][11] = (MAP_NUMBER >> 4 & 0x1);
+  ideal_map[1][10] = (MAP_NUMBER >> 4 & 0x1);
+  ideal_map[1][9] = (MAP_NUMBER >> 3 & 0x1);
+  ideal_map[1][8] = (MAP_NUMBER >> 3 & 0x1);
+  ideal_map[1][7] = (MAP_NUMBER >> 3 & 0x1);
+  ideal_map[1][6] = (MAP_NUMBER >> 3 & 0x1);
+  ideal_map[1][5] = (MAP_NUMBER >> 3 & 0x1);
+  ideal_map[1][4] = (MAP_NUMBER >> 2 & 0x1);
+  ideal_map[1][3] = (MAP_NUMBER >> 2 & 0x1);
+  ideal_map[1][2] = (MAP_NUMBER >> 2 & 0x1);
+  ideal_map[1][1] = (MAP_NUMBER >> 2 & 0x1);
+  ideal_map[1][0] = (MAP_NUMBER >> 2 & 0x1);
+
+  // top edge
+  ideal_map[0][9] = (MAP_NUMBER >> 1 & 0x1);
+  ideal_map[0][8] = (MAP_NUMBER >> 1 & 0x1);
+  ideal_map[0][7] = (MAP_NUMBER >> 1 & 0x1);
+  ideal_map[0][6] = (MAP_NUMBER >> 1 & 0x1);
+  ideal_map[0][5] = (MAP_NUMBER >> 1 & 0x1);
+  ideal_map[0][4] = (MAP_NUMBER >> 0 & 0x1);
+  ideal_map[0][3] = (MAP_NUMBER >> 0 & 0x1);
+  ideal_map[0][2] = (MAP_NUMBER >> 0 & 0x1);
+  ideal_map[0][1] = (MAP_NUMBER >> 0 & 0x1);
+  ideal_map[0][0] = (MAP_NUMBER >> 0 & 0x1);
+
+
+	int matches[4] = {0,0,0,0}; // how many matches for each reading_offset
+
+	// test a reading_offset, and count the matches if we use that offset
+	for (int readings_offset = 0; readings_offset < 4; readings_offset++) {
+
+		// iterate through the four edges of the map
+		for (int compare_edge = 0; compare_edge < 4; compare_edge++) {
+			int ideal_map_row = compare_edge;
+			// shift the actual readings by readings_offset, and account for the first row of garbage (+1)
+			int readings_row =  ((compare_edge + readings_offset) % 4) + 1;
+			// count the matches up
+			for (int i = 0; i < 15; i++) {
+				if (readings[readings_row][i] == ideal_map[ideal_map_row][i]) {
+					matches[readings_offset]++;
+				}
+			}
+		}
+	}
+
+	// determine which offset resulted in the higest number of matches
+	int best_offset = -1;
+	int best_offset_matches = -1;
+	for (int i = 0; i < 4; i++) {
+		if (matches[i] > best_offset_matches) {
+			best_offset = i;
+			best_offset_matches = matches[i];
+		}
+	}
+	// if best_offset = ...
+	// 0: top edge was the first full edge encountered  (we are on the top edge now)    -> return 0
+	// 1: top edge was the second full edge encountered (we are on the left edge now)   -> return 3
+	// 2: top edge was the third full edge encountered  (we are on the bottom edge now) -> return 2
+	// 3: top edge was the fourth full edge encountered (we are on the right edge now)  -> return 1
+	return (4 - best_offset) % 4;
+}
+
+
+
 
 task main()
 {
@@ -292,15 +409,21 @@ task main()
 
 	saveReadingsToFile();
 
-	/*
-		// Based on values in readings, figure out where we are using probabilistic model
-		// Edge 0 is top edge, 1 is right, 2 is bottom and 3 is left
-		// int currentEdge = figureOutWhereWeAre();
-		int currentEdge = 1;
-		string destinationLetter = "C";
-		goToDestination(currentEdge, destinationLetter);
-		*/
 
-		while (nNxtButtonPressed != kExitButton) {}
+	// Based on values in readings, figure out where we are using probabilistic model
+	// Edge 0 is top edge, 1 is right, 2 is bottom and 3 is left
+	int currentEdge = figureOutWhereWeAre();
 
+	wait1Msec(1000); // wait two seconds
+
+	// report which edge we're on by beeping (once for top, twice for right, 3 times for bottom, 4 times for left)
+	for (int i=0; i < currentEdge+1; i++) {
+		playTone(800, 50); // tone for 0.5 sec
+		wait1Msec(1000);   // silent for 0.5 sec
+	}
+
+	goToDestination(currentEdge, destinationLetter);
+
+
+	while (nNxtButtonPressed != kExitButton) {}
 }
