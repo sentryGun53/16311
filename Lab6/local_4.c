@@ -33,11 +33,11 @@ float lastCornerX = 0, lastCornerY = 0;
 
 bool takeReadings = true;
 float readings[5][15] = {
-	{0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0},
-	{0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0},
-	{0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0},
-	{0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0},
-	{0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0}
+	{-1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1},
+	{-1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1},
+	{-1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1},
+	{-1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1},
+	{-1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1, -1,-1,-1,-1,-1}
 };
 
 float calculateDistance(float x, float y) {
@@ -336,7 +336,7 @@ int figureOutWhereWeAre() {
 		for (int compare_edge = 0; compare_edge < 4; compare_edge++) {
 			int ideal_map_row = compare_edge;
 			// shift the actual readings by readings_offset, and account for the first row of garbage (+1)
-			int readings_row =  (compare_edge + readings_offset) % 4 + 1;
+			int readings_row =  ((compare_edge + readings_offset) % 4) + 1;
 			// count the matches up
 			for (int i = 0; i < 15; i++) {
 				if (readings[readings_row][i] == ideal_map[ideal_map_row][i]) {
@@ -349,7 +349,7 @@ int figureOutWhereWeAre() {
 	// determine which offset resulted in the higest number of matches
 	int best_offset = -1;
 	int best_offset_matches = -1;
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < 4; i++) {
 		if (matches[i] > best_offset_matches) {
 			best_offset = i;
 			best_offset_matches = matches[i];
