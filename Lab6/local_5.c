@@ -21,8 +21,8 @@
 #define ARM_OFFSET 0.5
 
 ////////////////////////////////////////////////////////////////
-#define MAP_NUMBER 591
-string destinationLetter = "J";
+#define MAP_NUMBER 779
+string destinationLetter = "A";
 ////////////////////////////////////////////////////////////////
 
 
@@ -257,6 +257,19 @@ void saveReadingsToFile() {
 }
 
 
+void playTurnSound() {
+	// playSoundFile("! Startup.rso");
+	float c = 261.626;
+	playTone(c * pow(1.05946309436,0) , 10); // C
+	playTone(c * pow(1.05946309436,2) , 10); // D
+	playTone(c * pow(1.05946309436,4) , 10); // E
+	playTone(c * pow(1.05946309436,5) , 10); // F
+	playTone(c * pow(1.05946309436,7) , 10); // G
+	playTone(c * pow(1.05946309436,9) , 10); // A
+	playTone(c * pow(1.05946309436,11) , 10); // B
+	playTone(c * 2, 10); // C
+}
+
 
 // New turn counter
 task turnCounter() {
@@ -268,7 +281,7 @@ task turnCounter() {
 			lastCornerY = robotY;
 			// Make beep!
 			//playTone(1000, 100); // Play tone at 1000Hz for 1000ms
-			playSoundFile("! Startup.rso");
+			playTurnSound();
 
 			wait1Msec(1000); // Wait 1s to get back on straight path so old_TH is accurate
 			old_TH = robotTH;
@@ -382,9 +395,39 @@ int figureOutWhereWeAre() {
 
 
 
+void playEndSound() {
+	float c = 261.626;
+	/*
+	playTone(c * pow(1.05946309436,0) , 10); // C
+	playTone(c * pow(1.05946309436,2) , 10); // D
+	playTone(c * pow(1.05946309436,4) , 10); // E
+	playTone(c * pow(1.05946309436,5) , 10); // F
+	playTone(c * pow(1.05946309436,7) , 10); // G
+	playTone(c * pow(1.05946309436,9) , 10); // A
+	playTone(c * pow(1.05946309436,11) , 10); // B
+	*/
+
+	playTone(c * pow(1.05946309436,11), 20); // B
+	playTone(c * pow(1.05946309436,5) * 2, 20); // F
+	wait1Msec(500);
+	playTone(c * pow(1.05946309436,5) * 2, 10); // F
+	wait1Msec(250);
+	playTone(c * pow(1.05946309436,5) * 2, 26); // F
+	playTone(c * pow(1.05946309436,4) * 2, 27); // E
+	playTone(c * pow(1.05946309436,2) * 2, 27); // D
+	playTone(c * pow(1.05946309436,0) * 2, 20); // C
+	playTone(c * pow(1.05946309436,4) , 20); // E
+	playTone(c * pow(1.05946309436,7) / 2, 20); // G
+	playTone(c * pow(1.05946309436,4) , 20); // E
+	playTone(c * pow(1.05946309436,0), 20); // C
+
+}
+
+
 
 task main()
 {
+
 	nMotorEncoder[motorB] = 0;
 	nMotorEncoder[motorC] = 0;
 
@@ -418,12 +461,14 @@ task main()
 
 	// report which edge we're on by beeping (once for top, twice for right, 3 times for bottom, 4 times for left)
 	for (int i=0; i < currentEdge+1; i++) {
-		playTone(800, 50); // tone for 0.5 sec
+		playTone(800 * pow(1.12246204831,i) , 50); // tone for 0.5 sec
 		wait1Msec(1000);   // silent for 0.5 sec
 	}
 
 	goToDestination(currentEdge, destinationLetter);
 
+	wait1Msec(1000);
+	playEndSound();
 
 	while (nNxtButtonPressed != kExitButton) {}
 }
