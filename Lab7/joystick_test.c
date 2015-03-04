@@ -15,7 +15,7 @@
 
 #define L1 16
 #define L2 64
-#define LT 1024
+#define LD 1024 // Left stick pressed
 
 task main()
 {
@@ -30,6 +30,7 @@ task main()
 
 		if (joystick.joy1_Buttons == 8 || joystick.joy1_Buttons == 2) { // Right trigger is pressed left or right
 				// Turn
+			// Todo: check for whether L1 is pressed
 			if (joystick.joy1_Buttons == 8) {
 				motor[motorB] = -25;
 				motor[motorC] = 25;
@@ -40,9 +41,9 @@ task main()
 		}
 
 		else { // Go forwards/backwards
-			if (joystick.joy1_Buttons == LT) {
-				motor[motorB] = joystick.joy1_y1/127 * 100;
-				motor[motorC] = joystick.joy1_y1/127 * 100;
+			if (joystick.joy1_Buttons == LD) {
+				motor[motorB] = joystick.joy1_y1/127 * 75;
+				motor[motorC] = joystick.joy1_y1/127 * 75;
 			} else if (joystick.joy1_Buttons == L1) {
 				motor[motorB] = joystick.joy1_y1/127 * 25;
 				motor[motorC] = joystick.joy1_y1/127 * 25;
