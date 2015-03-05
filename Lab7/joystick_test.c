@@ -16,10 +16,13 @@
 #define L1 16
 #define L2 64
 #define LD 1024 // Left stick pressed
+#define R1 32
+#define R2 128
 
 task main()
 {
 	while (true) {
+		//motor[motorA] = -50; // Can only go backwards
 		getJoystickSettings(joystick);
 
 
@@ -27,30 +30,39 @@ task main()
 		nxtDisplayTextLine(1, "%d", joystick.joy1_y1);
 		nxtDisplayTextLine(2, "%d", joystick.joy1_Buttons);
 
+		/*
+		// Flipper idea
+		if (joystick.joy1_Buttons == R1) motor[motorA] = -50;
+		else if (joystick.joy1_Buttons == R2) motor[motorA] = 50;
+		else motor[motorA] = 0;
+		*/
 
-		if (joystick.joy1_Buttons == 8 || joystick.joy1_Buttons == 2) { // Right trigger is pressed left or right
-				// Turn
-			// Todo: check for whether L1 is pressed
-			if (joystick.joy1_Buttons == 8) {
+		if (joystick.joy1_Buttons == 8 || joystick.joy1_Buttons == 2 || joystick.joy1_Buttons == 24 || joystick.joy1_Buttons == 18) { // Right trigger is pressed left or right
+			// Turn
+			if (joystick.joy1_Buttons == 8) { // Turn left
 				motor[motorB] = -25;
 				motor[motorC] = 25;
-			} else {
+			} else if (joystick.joy1_Buttons == 24) { // 24 = 8 + 16 Turn left slowly
+				motor[motorB] = -10;
+				motor[motorC] = 10;
+			} else if (joystick.joy1_Buttons == 2) { // Turn right
 				motor[motorB] = 25;
 				motor[motorC] = -25;
+			} else { // Turn right slowly
+				motor[motorB] = 10;
+				motor[motorC] = -10;
 			}
 		}
 
 		else { // Go forwards/backwards
-			if (joystick.joy1_Buttons == LD) {
-				motor[motorB] = joystick.joy1_y1/127 * 75;
-				motor[motorC] = joystick.joy1_y1/127 * 75;
-			} else if (joystick.joy1_Buttons == L1) {
-				motor[motorB] = joystick.joy1_y1/127 * 25;
-				motor[motorC] = joystick.joy1_y1/127 * 25;
-			} else {
-				motor[motorB] = joystick.joy1_y1/127 * 50;
-				motor[motorC] = joystick.joy1_y1/127 * 50;
-			}
+			// 50 is default speed
+			double speedFactor = 1.0;
+			if (joystick.joy1_Buttons == LD) speedFactor = 1.5; // 75
+			else if (joystick.joy1_Buttons == L1) speedFactor = 0.5; // 25
+			else if (joystick.joy1_Buttons == L2) speedFactor = 0.2; // 10
+
+			motor[motorB] = joystick.joy1_y1/127 * 50 * speedFactor;
+			motor[motorC] = joystick.joy1_y1/127 * 50 * speedFactor;
 		}
 
 		wait1Msec(10);
