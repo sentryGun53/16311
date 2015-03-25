@@ -114,9 +114,6 @@ task main()
 			motor[motorB] = (joystick.joy1_y1/127.0 * 50 + joystick.joy1_x1/127.0 * 50) * speedFactor * gearConfiguration;
 			motor[motorC] = (joystick.joy1_y1/127.0 * 50 - joystick.joy1_x1/127.0 * 50) * speedFactor * gearConfiguration;
 		}
-<<<<<<< HEAD
-<<<<<<< HEAD
-		*/
 
 		float speedFactor = 1.0;
 		// Very slow
@@ -150,10 +147,6 @@ task main()
 			motor[motorB] = 0;
 			motor[motorC] = 0;
 		}*/
-=======
->>>>>>> origin/master
-=======
->>>>>>> origin/master
 
 		wait10Msec(1);
 	}
