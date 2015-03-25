@@ -55,13 +55,13 @@ task goToDesiredPositionMotorA() {
 }
 
 void turn_left() {
-	motor[motorB] = 50;
-	motor[motorC] = -50;
+	motor[motorB] = -50;
+	motor[motorC] = 50;
 }
 
 void turn_right() {
-	motor[motorB] = -50;
-	motor[motorC] = 50;
+	motor[motorB] = 50;
+	motor[motorC] = -50;
 }
 
 
@@ -108,8 +108,8 @@ task main()
 		else if (joystick.joy1_Buttons == L1) turn_left();
 		else if (joystick.joy1_Buttons == B1) followLine();
 		else if (joystick.joy1_x2 != 0) {
-			if (joystick.joy1_x2 < 0) motor[motorB] = 50 * joystick.joy1_x2/-128;
-			else motor[motorB] = 50 * joystick.joy1_x2/128;
+			if (joystick.joy1_x2 < 0) motor[motorC] = -50 * joystick.joy1_x2/-128;
+			else motor[motorB] = -50 * joystick.joy1_x2/128;
 		} else {
 			float speedFactor = 1.0;
 			// Very slow
