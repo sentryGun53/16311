@@ -81,8 +81,6 @@ void followLine() {
 	}
 }
 
-
-
 task main()
 {
 	nPowerDownDelayMinutes = 525600;
@@ -114,39 +112,6 @@ task main()
 			motor[motorB] = (joystick.joy1_y1/127.0 * 50 + joystick.joy1_x1/127.0 * 50) * speedFactor * gearConfiguration;
 			motor[motorC] = (joystick.joy1_y1/127.0 * 50 - joystick.joy1_x1/127.0 * 50) * speedFactor * gearConfiguration;
 		}
-
-		float speedFactor = 1.0;
-		// Very slow
-		if (joystick.joy1_Buttons == L1 + L2) speedFactor = 0.2; // 10
-		// Fast
-		else if (joystick.joy1_Buttons == L1) speedFactor = 2.0; // 75
-		// Slow
-		else if (joystick.joy1_Buttons == L2) speedFactor = 0.5; // 25
-
-		motor[motorB] = (joystick.joy1_y1/127.0 * 50 + joystick.joy1_x1/127.0 * 50) * speedFactor * gearConfiguration;
-		motor[motorC] = (joystick.joy1_y1/127.0 * 50 - joystick.joy1_x1/127.0 * 50) * speedFactor * gearConfiguration;
-
-		/*
-		if (joystick.joy1_x1 != -1 && joystick.joy1_y1 == 1) { // Right trigger is pressed left or right
-			// Turn
-			if (joystick.joy1_x1 < -1) { // Turn left
-				motor[motorB] = -25 * gearConfiguration * speedFactor;
-				motor[motorC] = 25 * gearConfiguration * speedFactor;
-			} else { // Turn right
-				motor[motorB] = 25 * gearConfiguration * speedFactor;
-				motor[motorC] = -25 * gearConfiguration * speedFactor;
-			}
-		}
-
-		else if (joystick.joy1_y1 != 1 && joystick.joy1_x1 == -1) { // Go forwards/backwards
-			// 50 is default speed
-			motor[motorB] = joystick.joy1_y1/127 * 50 * speedFactor * gearConfiguration;
-			motor[motorC] = joystick.joy1_y1/127 * 50 * speedFactor * gearConfiguration;
-		}
-		else {
-			motor[motorB] = 0;
-			motor[motorC] = 0;
-		}*/
 
 		wait10Msec(1);
 	}
