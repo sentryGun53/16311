@@ -50,8 +50,8 @@ void goToDesiredPositionMotorA() {
 		if (difference < -180) difference += 360;
 		else if (difference > 180) difference -= 360;
 
-		if (difference > 0) motor[motorA] = -25;
-		else if (difference < -0) motor[motorA] = 25;
+		if (difference > 1) motor[motorA] = -25;
+		else if (difference < -1) motor[motorA] = 25;
 		else {
 			motor[motorA] = 0;
 		}
@@ -67,8 +67,25 @@ task deploy() {
 		if (difference < -180) difference += 360;
 		else if (difference > 180) difference -= 360;
 
-		if (difference > 1) motor[motorA] = -25;
-		else if (difference < -1) motor[motorA] = 25;
+		if (difference > 1) motor[motorA] = -50;
+		else if (difference < -1) motor[motorA] = 50;
+		else {
+			motor[motorA] = 0;
+		}
+		wait1Msec(10);
+	}
+}
+
+task deployWeak() {
+	// Go to desired position and stay there
+	while (true) {
+		int currentPosition = nMotorEncoder[motorA];
+		int difference = currentPosition - desiredPosition;
+		if (difference < -180) difference += 360;
+		else if (difference > 180) difference -= 360;
+
+		if (difference > 1) motor[motorA] = -20;
+		else if (difference < -1) motor[motorA] = 20;
 		else {
 			motor[motorA] = 0;
 		}
@@ -151,30 +168,41 @@ task main()
 		if (joystick.joy1_Buttons == R1) turn_right();
 		else if (joystick.joy1_Buttons == L1) turn_left();
 		else if (joystick.joy1_Buttons == B1) followLine();
+		else if (joystick.joy1_Buttons == B2) {
+			desiredPosition = (desiredPosition == 0) ? 95 : 0;
+			if (desiredPosition > 0) {
+				stopTask(undeploy);
+				startTask(deployWeak);
+			}
+			else {
+				stopTask(deploy);
+				stopTask(deployWeak);
+				startTask(undeploy);
+			};
+			wait1Msec(500); // ignore button presses for 0.5s
+		}
 		else if (joystick.joy1_Buttons == B3) {
 			desiredPosition = (desiredPosition == 0) ? 140 : 0;
-			//goToDesiredPositionMotorA();
 			if (desiredPosition > 0) {
 				stopTask(undeploy);
 				startTask(deploy);
 			}
 			else {
 				stopTask(deploy);
+				stopTask(deployWeak);
 				startTask(undeploy);
 			};
-			wait1Msec(500);
+			wait1Msec(500); // ignore button presses for 0.5s
 		}
-		else if (joystick.joy1_x2 != 0) {
-			if (joystick.joy1_x2 < 0) motor[motorC] = -50 * joystick.joy1_x2/-128;
-			else motor[motorB] = -50 * joystick.joy1_x2/128;
+		else if (joystick.joy1_x2 != 0) { // One-motor-only turns
+			if (joystick.joy1_x2 < 0) motor[motorB] = -50 * joystick.joy1_x2/-128;
+			else motor[motorC] = -50 * joystick.joy1_x2/128;
 		} else { // Move based on left joystick values
 			float speedFactor = 1.0;
-			// Very slow
-			if (joystick.joy1_Buttons == L1 + L2) speedFactor = 0.2; // 10
 			// Fast
-			else if (joystick.joy1_Buttons == L1) speedFactor = 2; // 75
+			if (joystick.joy1_Buttons == B4) speedFactor = 2; // 75
 			// Slow
-			else if (joystick.joy1_Buttons == L2) speedFactor = 0.5; // 25
+			//else if (joystick.joy1_Buttons == L2) speedFactor = 0.5; // 25
 
 			motor[motorB] = (joystick.joy1_y1/127.0 * 50 + joystick.joy1_x1/127.0 * 50) * speedFactor * gearConfiguration;
 			motor[motorC] = (joystick.joy1_y1/127.0 * 50 - joystick.joy1_x1/127.0 * 50) * speedFactor * gearConfiguration;
