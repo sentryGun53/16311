@@ -64,11 +64,11 @@ task deploy() {
 	while (true) {
 		int currentPosition = nMotorEncoder[motorA];
 		int difference = currentPosition - desiredPosition;
-		if (difference < -180) difference += 360;
-		else if (difference > 180) difference -= 360;
+		//if (difference < -180) difference += 360;
+		//else if (difference > 180) difference -= 360;
 
-		if (difference > 1) motor[motorA] = -50;
-		else if (difference < -1) motor[motorA] = 50;
+		if (difference > 1) motor[motorA] = -25;
+		else if (difference < -1) motor[motorA] = 25;
 		else {
 			motor[motorA] = 0;
 		}
@@ -81,11 +81,11 @@ task deployWeak() {
 	while (true) {
 		int currentPosition = nMotorEncoder[motorA];
 		int difference = currentPosition - desiredPosition;
-		if (difference < -180) difference += 360;
-		else if (difference > 180) difference -= 360;
+		//if (difference < -180) difference += 360;
+		//else if (difference > 180) difference -= 360;
 
-		if (difference > 1) motor[motorA] = -20;
-		else if (difference < -1) motor[motorA] = 20;
+		if (difference > 1) motor[motorA] = -25;
+		else if (difference < -1) motor[motorA] = 25;
 		else {
 			motor[motorA] = 0;
 		}
@@ -98,8 +98,8 @@ task undeploy() {
 	while (true) {
 		int currentPosition = nMotorEncoder[motorA];
 		int difference = currentPosition - desiredPosition;
-		if (difference < -180) difference += 360;
-		else if (difference > 180) difference -= 360;
+		//if (difference < -180) difference += 360;
+		//else if (difference > 180) difference -= 360;
 
 		if (difference > 1) motor[motorA] = -25;
 		else if (difference < -1) motor[motorA] = 25;
@@ -169,8 +169,8 @@ task main()
 		else if (joystick.joy1_Buttons == L1) turn_left();
 		else if (joystick.joy1_Buttons == B1) followLine();
 		else if (joystick.joy1_Buttons == B2) {
-			desiredPosition = (desiredPosition == 0) ? 95 : 0;
-			if (desiredPosition > 0) {
+			desiredPosition = (desiredPosition == 0) ? -325 : 0;
+			if (desiredPosition != 0) {
 				stopTask(undeploy);
 				startTask(deployWeak);
 			}
@@ -182,8 +182,8 @@ task main()
 			wait1Msec(500); // ignore button presses for 0.5s
 		}
 		else if (joystick.joy1_Buttons == B3) {
-			desiredPosition = (desiredPosition == 0) ? 140 : 0;
-			if (desiredPosition > 0) {
+			desiredPosition = (desiredPosition == 0) ? -550 : 0;
+			if (desiredPosition != 0) {
 				stopTask(undeploy);
 				startTask(deploy);
 			}
