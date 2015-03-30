@@ -61,6 +61,8 @@ void goToDesiredPositionMotorA() {
 
 task deploy() {
 	// Go to desired position and stay there
+	stopTask(undeploy);
+	stopTask(deployWeak);
 	while (true) {
 		int currentPosition = nMotorEncoder[motorA];
 		int difference = currentPosition - desiredPosition;
@@ -78,6 +80,8 @@ task deploy() {
 
 task deployWeak() {
 	// Go to desired position and stay there
+	stopTask(undeploy);
+	stopTask(deploy);
 	while (true) {
 		int currentPosition = nMotorEncoder[motorA];
 		int difference = currentPosition - desiredPosition;
@@ -95,6 +99,8 @@ task deployWeak() {
 
 task undeploy() {
 	// Go to desired position and quit
+	stopTask(deploy);
+	stopTask(deployWeak);
 	while (true) {
 		int currentPosition = nMotorEncoder[motorA];
 		int difference = currentPosition - desiredPosition;
