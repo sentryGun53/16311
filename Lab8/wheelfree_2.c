@@ -15,7 +15,7 @@
 
 
 
-int gearConfiguration = 1;
+int gearConfiguration = -1;
 
 void standUp() { // Once you're here you can never leave
 	nSyncedMotors = synchBC;
@@ -35,6 +35,49 @@ void standUp() { // Once you're here you can never leave
 	}
 }
 
+void pivotLeft() {
+	/*
+	nMotorEncoder[motorB] = 0;
+	nMotorEncoder[motorC] = 0;
+
+	nMotorEncoderTarget[motorB] = 38*180/24;
+	nMotorEncoderTarget[motorC] = 38*180/24;
+	*/
+
+	motor[motorB] = -50;
+	motor[motorC] = 50;
+
+	wait1Msec(600);
+
+	//while (nMotorRunState[motorC] != runStateIdle)
+	//while (nMotorRunState[motorB] != runStateIdle)
+
+	motor[motorB] = 0;
+	motor[motorC] = 0;
+
+}
+
+void pivotRight() {
+	/*
+	nMotorEncoder[motorB] = 0;
+	nMotorEncoder[motorC] = 0;
+
+	nMotorEncoderTarget[motorB] = -38*180/24;
+	nMotorEncoderTarget[motorC] = -38*180/24;
+	*/
+
+	motor[motorB] = 50;
+	motor[motorC] = -50;
+
+	//while (nMotorRunState[motorC] != runStateIdle)
+	//while (nMotorRunState[motorB] != runStateIdle)
+	wait1Msec(600);
+
+	motor[motorB] = 0;
+	motor[motorC] = 0;
+
+}
+
 task main()
 {
 	nMotorEncoder[motorA] = 0;
@@ -45,11 +88,29 @@ task main()
 		int speedFactor = 1;
 
 		if (joystick.joy1_Buttons == B1) {
-			standUp();
+			//standUp();
+			motor[motorA] = 10;
+		} else if (joystick.joy1_Buttons == B2) {
+			motor[motorA] = -10;
+		} else {
+			motor[motorA] = 0;
 		}
-		else if (joystick.joy1_x2 != 0) { // Pivot
+
+		if (joystick.joy1_x2 != 0) { // Pivot
+			// Old code
 			motor[motorB] = 50 * joystick.joy1_x2/128;
 			motor[motorC] = -50 * joystick.joy1_x2/128;
+
+
+			/*
+			if (joystick.joy1_x2 > 0) {
+				// Turn left
+				pivotLeft();
+			} else {
+				// Turn right
+				pivotRight();
+			}
+			*/
 		}
 		else {
 			 // Ignore miscalibration
