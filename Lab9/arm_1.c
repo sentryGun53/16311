@@ -193,26 +193,13 @@ task main()
 	while (nNxtButtonPressed != kEnterButton) {}
   wait1Msec(300);
 
-	/*
 	moveToAnglesLinearly(theta1A, theta2A);
 	while (nNxtButtonPressed != kEnterButton) {}
-
-
-	// Move to first position (A) and pause, wait for button press
-	//moveToFirstPosition();
 	*/
 
-	// Move to second position (B) and pause
-	//moveToSecondPosition();
-
-	// Move to third position (A) and pause
-	//moveToThirdPosition();
-
-	/*
-	// Reset
+	// Reset to origin
 	moveToAnglesLinearly(0,0);
 	while (nNxtButtonPressed != kEnterButton) {}
   wait1Msec(300);
-	*/
 
 }
