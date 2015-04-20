@@ -4,10 +4,10 @@
 // Or 40 rounds for a full circle
 
 // Globals, input goes here
-float xA = 0;
+float xA = -6.25;
 float yA = 6.25;
-float xB = 4;
-float yB = 4;
+float xB = 6.25;
+float yB = 6.25;
 
 float theta1A;
 float theta2A;
@@ -36,17 +36,18 @@ void calculateAnglesAndNearestWaypoints() {
   }
 
   // Waypoints: (0.49, 0.78), (pi/2, pi), (pi-0.49, 2*pi-0.78), (2.16, 0.95), (pi-2.16, 2*pi-0.95)
+  // (28,44), (90,180), (152,315), (123,54), (57,306)
   // Calculate nearest waypoint for pos A
-  float min = sqrt((0.49-theta1A)*(0.49-theta2A) + (0.78-theta2A)*(0.78-theta2A));
+  float min = sqrt((0.49-theta1A)*(0.49-theta1A) + (0.78-theta2A)*(0.78-theta2A));
   theta1WaypointA = 0.49;
   theta2WaypointA = 0.78;
-  float test = sqrt((PI/2-theta1A)*(PI/2-theta2A) + (PI-theta2A)*(PI-theta2A));
+  float test = sqrt((PI/2-theta1A)*(PI/2-theta1A) + (PI-theta2A)*(PI-theta2A));
   if (test < min) { min = test; theta1WaypointA = PI/2; theta2WaypointA = PI; }
-  test = sqrt((PI-0.49-theta1A)*(PI-0.49-theta2A) + (2*PI-0.78-theta2A)*(2*PI-0.78-theta2A));
+  test = sqrt((PI-0.49-theta1A)*(PI-0.49-theta1A) + (2*PI-0.78-theta2A)*(2*PI-0.78-theta2A));
   if (test < min) { min = test; theta1WaypointA = PI/2; theta2WaypointA = PI; }
-  test = sqrt((2.16-theta1A)*(2.16-theta2A) + (0.95-theta2A)*(0.95-theta2A));
+  test = sqrt((2.16-theta1A)*(2.16-theta1A) + (0.95-theta2A)*(0.95-theta2A));
   if (test < min) { min = test; theta1WaypointA = 2.16; theta2WaypointA = 0.95; }
-  test = sqrt((PI-2.16-theta1A)*(PI-2.16-theta2A) + (2*PI-0.95-theta2A)*(2*PI-0.95-theta2A));
+  test = sqrt((PI-2.16-theta1A)*(PI-2.16-theta1A) + (2*PI-0.95-theta2A)*(2*PI-0.95-theta2A));
   if (test < min) { min = test; theta1WaypointA = PI-2.16; theta2WaypointA = 2*PI-0.95; }
 
 	// Calculate angles for position B
@@ -64,20 +65,22 @@ void calculateAnglesAndNearestWaypoints() {
   }
 
   // Calculate nearest waypoint for pos B
-  min = sqrt((0.49-theta1B)*(0.49-theta2B) + (0.78-theta2B)*(0.78-theta2B));
+  min = sqrt((0.49-theta1B)*(0.49-theta1B) + (0.78-theta2B)*(0.78-theta2B));
   theta1WaypointB = 0.49;
   theta2WaypointB = 0.78;
-  test = sqrt((PI/2-theta1B)*(PI/2-theta2B) + (PI-theta2B)*(PI-theta2B));
+  test = sqrt((PI/2-theta1B)*(PI/2-theta1B) + (PI-theta2B)*(PI-theta2B));
   if (test < min) { min = test; theta1WaypointB = PI/2; theta2WaypointB = PI; }
-  test = sqrt((PI-0.49-theta1B)*(PI-0.49-theta2B) + (2*PI-0.78-theta2B)*(2*PI-0.78-theta2B));
+  test = sqrt((PI-0.49-theta1B)*(PI-0.49-theta1B) + (2*PI-0.78-theta2B)*(2*PI-0.78-theta2B));
   if (test < min) { min = test; theta1WaypointB = PI/2; theta2WaypointB = PI; }
-  test = sqrt((2.16-theta1B)*(2.16-theta2B) + (0.95-theta2B)*(0.95-theta2B));
+  test = sqrt((2.16-theta1B)*(2.16-theta1B) + (0.95-theta2B)*(0.95-theta2B));
   if (test < min) { min = test; theta1WaypointB = 2.16; theta2WaypointB = 0.95; }
-  test = sqrt((PI-2.16-theta1B)*(PI-2.16-theta2B) + (2*PI-0.95-theta2B)*(2*PI-0.95-theta2B));
+  test = sqrt((PI-2.16-theta1B)*(PI-2.16-theta1B) + (2*PI-0.95-theta2B)*(2*PI-0.95-theta2B));
   if (test < min) { min = test; theta1WaypointB = PI-2.16; theta2WaypointB = 2*PI-0.95; }
 
   nxtDisplayTextLine(0, "%d,%d", theta1A/PI*180, theta2A/PI*180);
   nxtDisplayTextLine(1, "%d,%d", theta1B/PI*180, theta2B/PI*180);
+  nxtDisplayTextLine(2, "%d,%d", theta1WaypointA/PI*180, theta2WaypointA/PI*180);
+  nxtDisplayTextLine(3, "%d,%d", theta1WaypointB/PI*180, theta2WaypointB/PI*180);
 }
 
 float theta1ToEncoderValue(float theta1) {
@@ -95,8 +98,8 @@ void moveToAnglesLinearly(float theta1, float theta2) {
 	float differenceA = desiredEncoderA - nMotorEncoder[motorA];
 	float differenceB = desiredEncoderB - nMotorEncoder[motorB];
 
-  nxtDisplayTextLine(2, "%d", differenceA);
-  nxtDisplayTextLine(3, "%d", differenceB);
+  //nxtDisplayTextLine(2, "%d", differenceA);
+  //nxtDisplayTextLine(3, "%d", differenceB);
 
 	if (abs(differenceA) < abs(differenceB)) { // B goes at full speed, A goes at a fraction of that
 		if (differenceB < 0) { // desiredEncoderB < nMotorEncoder[motorB]
