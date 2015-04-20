@@ -288,6 +288,7 @@ class EventBasedAnimationDemo(EventBasedAnimationClass):
         #self.waypoints.append((event.x, event.y))
         self.lastClickPosition = (event.x, event.y)
         self.lastClickPositionInInches = ((event.x-mapWidth*50/2)*1.0/50, (mapHeight*50-event.y)*1.0/50)
+        print self.lastClickPositionInInches
         self.drawPositionOnCSpace(*self.calculateAngles(), type="non-redrawable")
         self.phase = "moving to first waypoint"
 
