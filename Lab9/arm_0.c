@@ -4,17 +4,17 @@
 // Or 44 rounds for a full circle
 
 // Globals, input goes here
-float xA = 3;
-float yA = 3;
-float xB = 6.25;
-float yB = 0;
+float xA = 0;
+float yA = 6.25;
+float xB = 4;
+float yB = 4;
 
 float theta1A;
 float theta2A;
 float theta1B;
 float theta2B;
 
-float numberOfRoundsForFullCircle = 42;
+float numberOfRoundsForFullCircle = 40.5;
 
 void calculateAngles() {
 	// Calculate angles for position A
@@ -64,18 +64,32 @@ void moveToAnglesLinearly(float theta1, float theta2) {
 	float differenceA = desiredEncoderA - nMotorEncoder[motorA];
 	float differenceB = desiredEncoderB - nMotorEncoder[motorB];
 
-  nxtDisplayTextLine(2, "%d", desiredEncoderA);
-  nxtDisplayTextLine(3, "%d", desiredEncoderB);
+  nxtDisplayTextLine(2, "%d", differenceA);
+  nxtDisplayTextLine(3, "%d", differenceB);
 
 	if (abs(differenceA) < abs(differenceB)) { // B goes at full speed, A goes at a fraction of that
-		while (abs(nMotorEncoder[motorB]) < abs(differenceB)) {
-			motor[motorA] = abs(differenceA)/abs(differenceB) * sgn(differenceA) * 75;
-			motor[motorB] = 75 * sgn(differenceB);
+		if (differenceB < 0) { // desiredEncoderB < nMotorEncoder[motorB]
+			while (desiredEncoderB < nMotorEncoder[motorB]) {
+				motor[motorA] = abs(differenceA)/abs(differenceB) * sgn(differenceA) * 75;
+				motor[motorB] = 75 * sgn(differenceB);
+			}
+		} else { // desiredEncoderB > nMotorEncoder[motorB]
+			while (desiredEncoderB > nMotorEncoder[motorB]) {
+				motor[motorA] = abs(differenceA)/abs(differenceB) * sgn(differenceA) * 75;
+				motor[motorB] = 75 * sgn(differenceB);
+			}
 		}
 	} else { // A goes at full speed, B goes at a fraction of that
-		while (abs(nMotorEncoder[motorA]) < abs(differenceA)) {
-			motor[motorB] = abs(differenceB)/abs(differenceA) * sgn(differenceB) * 75;
-			motor[motorA] = 75 * sgn(differenceA);
+		if (differenceA < 0) { // desiredEncoderA < nMotorEncoder[motorA]
+			while (desiredEncoderA < nMotorEncoder[motorA]) {
+				motor[motorB] = abs(differenceB)/abs(differenceA) * sgn(differenceB) * 75;
+				motor[motorA] = 75 * sgn(differenceA);
+			}
+		} else { // desiredEncoderA > nMotorEncoder[motorA]
+			while (desiredEncoderA > nMotorEncoder[motorA]) {
+				motor[motorB] = abs(differenceB)/abs(differenceA) * sgn(differenceB) * 75;
+				motor[motorA] = 75 * sgn(differenceA);
+			}
 		}
 	}
 
@@ -84,27 +98,7 @@ void moveToAnglesLinearly(float theta1, float theta2) {
 }
 
 void moveToFirstPosition() {
-	//nMotorEncoderTarget[motorA] = -720;
-	//nMotorEncoderTarget[motorB] = 360;
 
-	/*
-	motor[motorA] = -50;
-	motor[motorB] = 25;
-	*/
-
-	//while (nMotorRunState[motorA] != runStateIdle)
-	//while (nMotorRunState[motorB] != runStateIdle)
-
-	// Calculate desired motor encoder values for both A and B to get to desired
-
-
-	while (nMotorEncoder[motorA] > -3960) {
-		motor[motorA] = -50;
-		motor[motorB] = 0;
-	}
-
-	motor[motorA] = 0;
-	motor[motorB] = 0;
 }
 
 void moveToSecondPosition() {
@@ -149,8 +143,10 @@ task main()
 	//moveToThirdPosition();
 
 	// Reset
+
 	moveToAnglesLinearly(0,0);
 	while (nNxtButtonPressed != kEnterButton) {}
   wait1Msec(300);
+
 
 }
